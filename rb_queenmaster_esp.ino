@@ -31,6 +31,19 @@ void wifiSetting() {
   Serial.println();
   Serial.print("Hardware IP Address: ");
   Serial.println(hardwareIPAddress);
+
+  // WiFi Client Setup
+  WiFi.begin("Ricki", "rickibinyamin");
+  // Wait for connection
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.print("Connected to ");
+  Serial.println("Ricki");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
 }
 
 void loadVersion() {
