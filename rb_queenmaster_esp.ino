@@ -19,11 +19,16 @@ void commonSetting() {
 }
 
 void wifiSetting() {
+  // Set WiFi to both mode
+  Serial.println("Configuring WiFi Mode...");
+  WiFi.mode(WIFI_AP_STA);
+  delay(100);
+  
   // Access Point Setup
-  Serial.println();
   Serial.println("Configuring Access Point...");
   WiFi.softAP("SCANDO_hardware", "scandohardware");
   IPAddress hardwareIPAddress = WiFi.softAPIP();
+  Serial.println();
   Serial.print("Hardware IP Address: ");
   Serial.println(hardwareIPAddress);
 }
