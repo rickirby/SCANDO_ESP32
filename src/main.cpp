@@ -3,6 +3,7 @@
 #include <WiFiAP.h>
 #include <ESPAsyncWebServer.h>
 #include <ProjectHeader.hpp>
+#include <WifiManager.hpp>
 
 void commonSetting() {
     Serial.begin(115200);
@@ -42,24 +43,27 @@ AsyncWebServer server(80);
 
 void setup() {
     commonSetting();
-    wifiSetting();
-    Serial.println(WiFi.localIP());
-    server.on(
-        "/post",
-        HTTP_POST,
-        [](AsyncWebServerRequest * request){},
-        NULL,
-        [](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
-            Serial.println("GOT");
-            delay(1000);
-            for (size_t i = 0; i < len; i++) {
-                Serial.write(data[i]);
-            }
-            Serial.println();
-            request->send(200);
-    });
+    // wifiSetting();
+    // Serial.println(WiFi.localIP());
+    // server.on(
+    //     "/post",
+    //     HTTP_POST,
+    //     [](AsyncWebServerRequest * request){},
+    //     NULL,
+    //     [](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
+    //         Serial.println("GOT");
+    //         delay(1000);
+    //         for (size_t i = 0; i < len; i++) {
+    //             Serial.write(data[i]);
+    //         }
+    //         Serial.println();
+    //         request->send(200);
+    // });
     
-    server.begin();
+    // server.begin();
+
+    WifiManager wifiManager("ESP32", "12345678");
+    wifiManager.begin();
 }
 
 void loop() {
