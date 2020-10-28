@@ -4,16 +4,6 @@
 
 const String PROJECT_VERSION = "0.0.0";
 
-void setup() {
-  commonSetting();
-  loadVersion();
-  wifiSetting();
-}
-
-void loop() {
-  
-}
-
 void commonSetting() {
   Serial.begin(115200);
 }
@@ -55,4 +45,15 @@ void loadVersion() {
   Serial.println(" Created by Ricki Bin Yamin");
   Serial.println("============================");
   Serial.println();
+}
+
+void setup() {
+  commonSetting();
+  loadVersion();
+  wifiSetting();
+}
+
+void loop() {
+  Serial.println("HALO");
+  delay(1000);
 }
