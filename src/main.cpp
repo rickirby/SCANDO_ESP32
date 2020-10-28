@@ -3,12 +3,10 @@
 #include <WiFiAP.h>
 #include <ProjectHeader.hpp>
 
-#define PROJECT_VERSION "0.0.1"
-
 void commonSetting()
 {
     Serial.begin(115200);
-    ProjectHeader::loadHeader(PROJECT_VERSION);
+    ProjectHeader::loadHeader();
 }
 
 void wifiSetting()

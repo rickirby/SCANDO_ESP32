@@ -10,10 +10,11 @@
 #define ProjectHeader_hpp
 
 #include <WiFi.h>
+#include "PROJECT_INFO.h"
 
 class ProjectHeader {
 public:
-    static void loadHeader(String ver);
+    static void loadHeader();
 };
 
 #endif /* ProjectHeader_hpp */
