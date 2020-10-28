@@ -15,6 +15,10 @@
 class ProjectHeader {
 public:
     static void loadHeader();
+
+private:
+    static void makeLine(char length);
+    static void centerText(String text, char containerLength);
 };
 
 #endif /* ProjectHeader_hpp */
