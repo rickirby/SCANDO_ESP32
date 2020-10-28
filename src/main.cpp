@@ -1,11 +1,13 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WiFiAP.h>
+#include <ProjectHeader.hpp>
 
-const String PROJECT_VERSION = "0.0.0";
+#define PROJECT_VERSION "0.0.1"
 
 void commonSetting() {
   Serial.begin(115200);
+  ProjectHeader::loadHeader(PROJECT_VERSION);
 }
 
 void wifiSetting() {
@@ -36,20 +38,8 @@ void wifiSetting() {
   Serial.println(WiFi.localIP());
 }
 
-void loadVersion() {
-  // Printing header and version
-  Serial.println();
-  Serial.println("============================");
-  Serial.println("     RB_QueenMaster_Esp");
-  Serial.println("       Version  " + PROJECT_VERSION);
-  Serial.println(" Created by Ricki Bin Yamin");
-  Serial.println("============================");
-  Serial.println();
-}
-
 void setup() {
   commonSetting();
-  loadVersion();
   wifiSetting();
 }
 
