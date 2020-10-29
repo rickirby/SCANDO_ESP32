@@ -13,12 +13,15 @@
 #include <WiFiClient.h>
 #include <WiFiAP.h>
 #include <ESPAsyncWebServer.h>
+#include <AsyncJson.h>
+#include <ArduinoJson.h>
 
 class WifiManager {
 private:
     char* _APSSID;
     char* _APPASS;
 
+    void _scanwifiHandler(AsyncWebServerRequest* request);
 public:
     AsyncWebServer* server;
 
