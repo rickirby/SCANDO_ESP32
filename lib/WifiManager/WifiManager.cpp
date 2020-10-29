@@ -50,14 +50,20 @@ void WifiManager::begin() {
     server->on(
         "/connectwifi",
         HTTP_POST,
-        [](AsyncWebServerRequest * request){},
+        [](AsyncWebServerRequest * request) {},
         NULL,
         [](AsyncWebServerRequest * request, uint8_t* data, size_t len, size_t index, size_t total) {
             String jsonData;
             for (size_t i = 0; i < len; i++) {
                 jsonData += (char)data[i];
             }
+            
             Serial.println(jsonData);
+
+            StaticJsonDocument<200> doc;
+            deserializeJson(doc, jsonData);
+            const char* value = doc["ssid"];
+            Serial.println(value);
             
             request->send(200);
         }
