@@ -49,8 +49,10 @@ void WifiManager::begin() {
                 Serial.print(n);
                 Serial.println(" networks found");
 
-                StaticJsonDocument<500> doc;
-                JsonArray wifiList = doc.createNestedArray("wifilist");
+                AsyncJsonResponse * response = new AsyncJsonResponse();
+                response->addHeader("Server","RBQueenMaster");
+                JsonObject root = response->getRoot();
+                JsonArray wifiList = root.createNestedArray("wifilist");
 
                 for (int i = 0; i < n; ++i) {
                     // Print SSID and RSSI for each network found
@@ -67,20 +69,8 @@ void WifiManager::begin() {
                     delay(10);
                 }
 
-                Serial.print(F("Sending: "));
-                serializeJson(doc, Serial);
-                Serial.println();
-
-                // serializeJsonPretty(doc, request);
-
-                AsyncJsonResponse * response = new AsyncJsonResponse();
-                response->addHeader("Server","ESP Async Web Server");
-                JsonObject root = response->getRoot();
-                root["heap"] = wifiList;
                 response->setLength();
                 request->send(response);
-
-                // request->send(200, "application/json", doc);
             }
         }
     );
