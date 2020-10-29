@@ -36,11 +36,24 @@ void WifiManager::begin() {
     // Starting Server
     Serial.println();
     Serial.println("Starting server...");
+
+    // scanwifi server through GET request
     server->on(
         "/scanwifi",
         HTTP_GET,
         [this](AsyncWebServerRequest* request) {
             _scanwifiHandler(request);
+        }
+    );
+
+    // connectwifi server through POST request
+    server->on(
+        "/connectwifi",
+        HTTP_POST,
+        [](AsyncWebServerRequest* request) {},
+        NULL,
+        [this](AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
+            _connectwifiHandler(request, data, len, index, total);
         }
     );
 
@@ -81,4 +94,38 @@ void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
 
     response->setLength();
     request->send(response);
+}
+
+void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
+    Serial.println();
+    Serial.println("Got wifi scan request..");
+    String jsonData;
+    for (size_t i = 0; i < len; i++) {
+        jsonData += (char)data[i];
+    }
+    
+    Serial.println("Raw JSON data:");
+    Serial.println(jsonData);
+
+    StaticJsonDocument<200> doc;
+    deserializeJson(doc, jsonData);
+    const char* ssid = doc["ssid"];
+    const char* pass = doc["pass"];
+
+    Serial.println((String)"SSID: " + ssid);
+    Serial.println((String)"PASS: " + pass);
+    Serial.println();
+
+    Serial.print((String)"Connecting to " + ssid);
+    WiFi.begin(ssid, pass);
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(100);
+        Serial.print(".");
+    }
+    Serial.println();
+    Serial.println((String)"Connected to " + ssid);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+            
+    request->send(200);
 }
