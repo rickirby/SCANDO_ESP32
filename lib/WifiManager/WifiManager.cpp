@@ -117,15 +117,31 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     Serial.println();
 
     Serial.print((String)"Connecting to " + ssid);
+    unsigned char countToTimeout = 0;
     WiFi.begin(ssid, pass);
     while (WiFi.status() != WL_CONNECTED) {
         delay(100);
         Serial.print(".");
+        if (countToTimeout > 30) {
+            Serial.println();
+            Serial.println((String)"Failed connecting to " + ssid);
+            _errorResponse(request, "Could not connect");
+            return;
+        }
+        countToTimeout++;
     }
     Serial.println();
     Serial.println((String)"Connected to " + ssid);
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
-            
-    request->send(200);
+
+    _successResponse(request, "Done");
+}
+
+void WifiManager::_errorResponse(AsyncWebServerRequest* request, String msg) {
+    request->send(400, "application/json", "{\"msg\":\"" + msg + "\"}");
+}
+
+void WifiManager::_successResponse(AsyncWebServerRequest* request, String msg) {
+    request->send(200, "application/json", "{\"msg\":\"" + msg + "\"}");
 }
