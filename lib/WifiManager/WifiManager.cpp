@@ -57,6 +57,13 @@ void WifiManager::begin() {
         }
     );
 
+    // not found handler
+    server->onNotFound(
+        [](AsyncWebServerRequest* request) {
+            request->send(404);
+        }
+    );
+
     server->begin();
     Serial.println("Server Started!");
 }
