@@ -71,7 +71,14 @@ void WifiManager::begin() {
                 serializeJson(doc, Serial);
                 Serial.println();
 
-                serializeJsonPretty(doc, request);
+                // serializeJsonPretty(doc, request);
+
+                AsyncJsonResponse * response = new AsyncJsonResponse();
+                response->addHeader("Server","ESP Async Web Server");
+                JsonObject root = response->getRoot();
+                root["heap"] = wifiList;
+                response->setLength();
+                request->send(response);
 
                 // request->send(200, "application/json", doc);
             }
