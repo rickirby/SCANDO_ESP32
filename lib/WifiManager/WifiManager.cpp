@@ -44,9 +44,14 @@ void WifiManager::begin() {
             Serial.println("scan done");
             if (n == 0) {
                 Serial.println("no networks found");
+                request->send(200, "text/plain", "Gagal bro!!");
             } else {
                 Serial.print(n);
                 Serial.println(" networks found");
+
+                StaticJsonDocument<500> doc;
+                JsonArray wifiList = doc.createNestedArray("wifilist");
+
                 for (int i = 0; i < n; ++i) {
                     // Print SSID and RSSI for each network found
                     Serial.print(i + 1);
@@ -56,10 +61,20 @@ void WifiManager::begin() {
                     Serial.print(WiFi.RSSI(i));
                     Serial.print(")");
                     Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
+
+                    wifiList.add(WiFi.SSID(i));
+
                     delay(10);
                 }
+
+                Serial.print(F("Sending: "));
+                serializeJson(doc, Serial);
+                Serial.println();
+
+                serializeJsonPretty(doc, request);
+
+                // request->send(200, "application/json", doc);
             }
-            request->send(200, "text/plain", "Sukses bro!!");
         }
     );
 
