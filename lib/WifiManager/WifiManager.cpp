@@ -114,6 +114,18 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
 
     Serial.println((String)"SSID: " + ssid);
     Serial.println((String)"PASS: " + pass);
+    Serial.println();
+
+    Serial.print((String)"Connecting to " + ssid);
+    WiFi.begin(ssid, pass);
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(100);
+        Serial.print(".");
+    }
+    Serial.println();
+    Serial.println((String)"Connected to " + ssid);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
             
     request->send(200);
 }
