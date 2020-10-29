@@ -8,19 +8,23 @@
 
 #include "ProjectHeader.hpp"
 
+// MARK: - Public Methods
+
 void ProjectHeader::loadHeader() {
 
     Serial.println();
-    makeLine(66);
-    centerText(PROJECT_NAME, 70);
-    centerText((String)"Version " + PROJECT_VERSION, 70);
-    centerText((String)"Created by " + PROJECT_OWNER, 70);
-    centerText("Copyright © 2020 Ricki Bin Yamin. All rights reserved", 66);
-    makeLine(66);
+    _makeLine(66);
+    _centerText(PROJECT_NAME, 70);
+    _centerText((String)"Version " + PROJECT_VERSION, 70);
+    _centerText((String)"Created by " + PROJECT_OWNER, 70);
+    _centerText("Copyright © 2020 Ricki Bin Yamin. All rights reserved", 66);
+    _makeLine(66);
     Serial.println();
 }
 
-void ProjectHeader::makeLine(char length) {
+// MARK: - Private Methods
+
+void ProjectHeader::_makeLine(char length) {
     char i = length;
     while (i) {
         Serial.print("=");
@@ -29,7 +33,7 @@ void ProjectHeader::makeLine(char length) {
     Serial.println();
 }
 
-void ProjectHeader::centerText(String text, char containerLength) {
+void ProjectHeader::_centerText(String text, char containerLength) {
     unsigned char spaces = (containerLength - text.length()) / 2;
     while (spaces) {
         Serial.print(" ");

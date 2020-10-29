@@ -13,4 +13,4 @@
 #define PROJECT_VERSION "0.0.0"
 #define PROJECT_OWNER "Ricki Bin Yamin"
 
-#endif
+#endif /* PROJECT_INFO_h */
