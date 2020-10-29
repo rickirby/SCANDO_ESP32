@@ -36,11 +36,30 @@ void WifiManager::begin() {
     // Starting Server
     Serial.println();
     Serial.println("Starting server...");
+
+    // scanwifi server through GET request
     server->on(
         "/scanwifi",
         HTTP_GET,
         [this](AsyncWebServerRequest* request) {
             _scanwifiHandler(request);
+        }
+    );
+
+    // connectwifi server through POST request
+    server->on(
+        "/connectwifi",
+        HTTP_POST,
+        [](AsyncWebServerRequest * request){},
+        NULL,
+        [](AsyncWebServerRequest * request, uint8_t* data, size_t len, size_t index, size_t total) {
+            String jsonData;
+            for (size_t i = 0; i < len; i++) {
+                jsonData += (char)data[i];
+            }
+            Serial.println(jsonData);
+            
+            request->send(200);
         }
     );
 
