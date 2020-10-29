@@ -13,12 +13,20 @@
 #include "PROJECT_INFO.h"
 
 class ProjectHeader {
+
 public:
+
+    // MARK: - Public Methods
+
     static void loadHeader();
 
 private:
-    static void makeLine(char length);
-    static void centerText(String text, char containerLength);
+
+    // MARK: - Private Methods
+
+    static void _makeLine(char length);
+    static void _centerText(String text, char containerLength);
+
 };
 
 #endif /* ProjectHeader_hpp */

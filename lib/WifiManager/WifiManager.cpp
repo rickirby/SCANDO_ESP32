@@ -8,6 +8,8 @@
 
 #include "WifiManager.hpp"
 
+// MARK: - Life Cycles
+
 WifiManager::WifiManager(char* APSSID, char* APPASS) {
     _APSSID = APSSID;
     _APPASS = APPASS;
@@ -17,6 +19,8 @@ WifiManager::WifiManager(char* APSSID, char* APPASS) {
 
 WifiManager::~WifiManager() {
 }
+
+// MARK: - Public Methods
 
 void WifiManager::begin() {
     // Set WiFi to both mode
@@ -67,6 +71,8 @@ void WifiManager::begin() {
     server->begin();
     Serial.println("Server Started!");
 }
+
+// MARK: - Private Methods
 
 void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
     Serial.println();

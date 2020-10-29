@@ -17,21 +17,36 @@
 #include <ArduinoJson.h>
 
 class WifiManager {
+
+public:
+
+    // MARK: - Public Properties
+
+    AsyncWebServer* server;
+
+    // MARK: - Life Cycles
+
+    WifiManager(char* APSSID, char* APPASS);
+    ~WifiManager();
+
+    // MARK: - Public Methods
+
+    void begin();
+
 private:
+
+    // MARK: - Private Properties
+
     char* _APSSID;
     char* _APPASS;
+
+    // MARK: - Private Methods
 
     void _scanwifiHandler(AsyncWebServerRequest* request);
     void _connectwifiHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total);
     void _errorResponse(AsyncWebServerRequest* request, String msg);
     void _successResponse(AsyncWebServerRequest* request, String msg);
-public:
-    AsyncWebServer* server;
 
-    WifiManager(char* APSSID, char* APPASS);
-    ~WifiManager();
-
-    void begin();
 };
 
-#endif /* WifiManager */
+#endif /* WifiManager_hpp */
