@@ -46,41 +46,39 @@ void WifiManager::begin() {
 
     server->begin();
     Serial.println("Server Started!");
-    Serial.println();
 }
 
 void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
+    Serial.println();
     Serial.println("Got wifi scan request..");
+    Serial.println("Scanning...");
     int n = WiFi.scanNetworks();
-    Serial.println("scan done");
-    if (n == 0) {
-        Serial.println("no networks found");
-        request->send(200, "text/plain", "Gagal bro!!");
-    } else {
-        Serial.print(n);
-        Serial.println(" networks found");
+    Serial.println();
+    Serial.println("Scanning Done!");
+    
+    Serial.print(n);
+    Serial.println(" networks found");
 
-        AsyncJsonResponse * response = new AsyncJsonResponse();
-        response->addHeader("Server","RBQueenMaster");
-        JsonObject root = response->getRoot();
-        JsonArray wifiList = root.createNestedArray("wifilist");
+    AsyncJsonResponse * response = new AsyncJsonResponse();
+    response->addHeader("Server","RBQueenMaster");
+    JsonObject root = response->getRoot();
+    JsonArray wifiList = root.createNestedArray("wifilist");
 
-        for (int i = 0; i < n; ++i) {
-            // Print SSID and RSSI for each network found
-            Serial.print(i + 1);
-            Serial.print(": ");
-            Serial.print(WiFi.SSID(i));
-            Serial.print(" (");
-            Serial.print(WiFi.RSSI(i));
-            Serial.print(")");
-            Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
+    for (int i = 0; i < n; ++i) {
+        // Print SSID and RSSI for each network found
+        Serial.print(i + 1);
+        Serial.print(": ");
+        Serial.print(WiFi.SSID(i));
+        Serial.print(" (");
+        Serial.print(WiFi.RSSI(i));
+        Serial.print(")");
+        Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
 
-            wifiList.add(WiFi.SSID(i));
+        wifiList.add(WiFi.SSID(i));
 
-            delay(10);
-        }
-
-        response->setLength();
-        request->send(response);
+        delay(10);
     }
+
+    response->setLength();
+    request->send(response);
 }
