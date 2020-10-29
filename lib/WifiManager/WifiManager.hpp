@@ -21,6 +21,7 @@ private:
     char* _APSSID;
     char* _APPASS;
 
+    void _scanwifiHandler(AsyncWebServerRequest* request);
 public:
     AsyncWebServer* server;
 
