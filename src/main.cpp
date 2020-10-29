@@ -62,7 +62,7 @@ void setup() {
     
     // server.begin();
 
-    WifiManager wifiManager("ESP32", "12345678");
+    WifiManager wifiManager((char*)"ESP32", (char*)"12345678");
     wifiManager.begin();
 }
 
