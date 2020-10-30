@@ -16,12 +16,9 @@ class WifiCache {
 
 public:
 
-// MARK: - Life Cycles
-
-WifiCache();
-~WifiCache();
-
 // MARK: - Public Methods
+
+static WifiCache* shared();
 
 void cacheWifi(char* SSID, char* PASS);
 char* getCacheSSID();
@@ -32,8 +29,14 @@ private:
 
 // MARK: - Private Properties
 
+static WifiCache* _instance;
 EEPROMClass* _ssid;
 EEPROMClass* _pass;
+
+// MARK: - Life Cycles, marked as private because it's singeton
+
+WifiCache();
+~WifiCache();
 
 };
 

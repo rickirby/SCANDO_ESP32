@@ -8,6 +8,20 @@
 
 #include "WifiCache.hpp"
 
+// MARK: - Singleton
+
+WifiCache* WifiCache::_instance = 0;
+
+WifiCache* WifiCache::shared() {
+    if (_instance == 0) {
+        _instance = new WifiCache();
+    }
+
+    return _instance;
+}
+
+// MARK: - Life Cycles
+
 WifiCache::WifiCache() {
     _ssid = new EEPROMClass("eeprom0", 64);
     _pass = new EEPROMClass("eeprom1", 64);
@@ -26,6 +40,11 @@ WifiCache::WifiCache() {
         ESP.restart();
     }
 }
+
+WifiCache::~WifiCache() {
+}
+
+// MARK: - Public Methods
 
 void WifiCache::cacheWifi(char* SSID, char* PASS) {
     _ssid->put(0, SSID);
@@ -47,5 +66,5 @@ char* WifiCache::getCachePASS() {
 }
 
 void WifiCache::clearCache() {
-    
+
 }
