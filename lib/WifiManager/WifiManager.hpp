@@ -16,7 +16,8 @@
 #include <ESPmDNS.h>
 #include <AsyncJson.h>
 #include <ArduinoJson.h>
-#include "PROJECT_CONSTANT.h"
+#include <PROJECT_CONSTANT.h>
+#include <WifiCache.hpp>
 
 class WifiManager {
 
