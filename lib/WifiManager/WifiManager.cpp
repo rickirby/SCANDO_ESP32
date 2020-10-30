@@ -159,9 +159,16 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     Serial.println();
     Serial.println((String)"Connected to " + ssid);
     Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
+    const String ipaddress = WiFi.localIP().toString();
+    Serial.println(ipaddress);
 
-    _successResponse(request, WiFi.localIP().toString());
+    if (!MDNS.begin("scandohardware")) {
+        Serial.println("Error setting up MDNS responder!");
+    } else {
+        Serial.println("mDNS responder started");
+    }
+
+    _successResponse(request, ipaddress);
 }
 
 void WifiManager::_errorResponse(AsyncWebServerRequest* request, String msg) {
