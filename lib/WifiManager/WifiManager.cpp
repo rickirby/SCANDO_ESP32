@@ -24,11 +24,24 @@ WifiManager::~WifiManager() {
 
 void WifiManager::begin() {
     // Set WiFi to both mode
+    _setupWifiMode();
+
+    // Access Point Setup
+    _setupAccessPoint();
+
+    // Server Setup
+    _setupServer();
+}
+
+// MARK: - Private Methods
+
+void WifiManager::_setupWifiMode() {
     Serial.println("Configuring wifi mode...");
     WiFi.mode(WIFI_AP_STA);
     delay(100);
+}
 
-    // Access Point Setup
+void WifiManager::_setupAccessPoint() {
     Serial.println("Configuring access point...");
     WiFi.softAP(_APSSID, _APPASS);
     IPAddress hardwareIPAddress = WiFi.softAPIP();
@@ -36,7 +49,9 @@ void WifiManager::begin() {
     Serial.println((String)"Access Point \"" + _APSSID + "\" has started.");
     Serial.print("Hardware IP Address: ");
     Serial.println(hardwareIPAddress);
+}
 
+void WifiManager::_setupServer() {
     // Starting Server
     Serial.println();
     Serial.println("Starting server...");
@@ -71,8 +86,6 @@ void WifiManager::begin() {
     server->begin();
     Serial.println("Server Started!");
 }
-
-// MARK: - Private Methods
 
 void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
     Serial.println();
@@ -148,7 +161,7 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
 
-    _successResponse(request, "Done");
+    _successResponse(request, "Success");
 }
 
 void WifiManager::_errorResponse(AsyncWebServerRequest* request, String msg) {
