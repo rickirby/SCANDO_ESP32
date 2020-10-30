@@ -161,7 +161,7 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
 
-    _successResponse(request, "Success");
+    _successResponse(request, WiFi.localIP().toString());
 }
 
 void WifiManager::_errorResponse(AsyncWebServerRequest* request, String msg) {
