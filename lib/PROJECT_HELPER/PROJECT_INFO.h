@@ -1,5 +1,5 @@
 //
-//  PROJECT_INFO.hpp
+//  PROJECT_INFO.h
 //  RBQueenMaster
 //
 //  Created by Ricki Bin Yamin on 28/10/20.

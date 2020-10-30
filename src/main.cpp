@@ -4,6 +4,7 @@
 #include <ESPAsyncWebServer.h>
 #include <ProjectHeader.hpp>
 #include <WifiManager.hpp>
+#include <PROJECT_CONSTANT.h>
 
 void commonSetting() {
     Serial.begin(115200);
@@ -11,7 +12,7 @@ void commonSetting() {
 }
 
 void wifiSetting() {
-    WifiManager wifiManager((char*)"ESP32", (char*)"12345678");
+    WifiManager wifiManager((char*)HARDWARE_SSID, (char*)HARDWARE_PASS);
     wifiManager.begin();
 }
 

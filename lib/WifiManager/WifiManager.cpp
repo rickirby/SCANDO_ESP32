@@ -24,11 +24,24 @@ WifiManager::~WifiManager() {
 
 void WifiManager::begin() {
     // Set WiFi to both mode
+    _setupWifiMode();
+
+    // Access Point Setup
+    _setupAccessPoint();
+
+    // Server Setup
+    _setupServer();
+}
+
+// MARK: - Private Methods
+
+void WifiManager::_setupWifiMode() {
     Serial.println("Configuring wifi mode...");
     WiFi.mode(WIFI_AP_STA);
     delay(100);
+}
 
-    // Access Point Setup
+void WifiManager::_setupAccessPoint() {
     Serial.println("Configuring access point...");
     WiFi.softAP(_APSSID, _APPASS);
     IPAddress hardwareIPAddress = WiFi.softAPIP();
@@ -36,7 +49,9 @@ void WifiManager::begin() {
     Serial.println((String)"Access Point \"" + _APSSID + "\" has started.");
     Serial.print("Hardware IP Address: ");
     Serial.println(hardwareIPAddress);
+}
 
+void WifiManager::_setupServer() {
     // Starting Server
     Serial.println();
     Serial.println("Starting server...");
@@ -72,11 +87,11 @@ void WifiManager::begin() {
     Serial.println("Server Started!");
 }
 
-// MARK: - Private Methods
-
 void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
     Serial.println();
     Serial.println("Got wifi scan request..");
+
+    // Scan nearby wifi network
     Serial.println("Scanning...");
     int n = WiFi.scanNetworks();
     Serial.println();
@@ -85,11 +100,13 @@ void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
     Serial.print(n);
     Serial.println(" networks found");
 
+    // Prepare json encoder
     AsyncJsonResponse * response = new AsyncJsonResponse();
     response->addHeader("Server","RBQueenMaster");
     JsonObject root = response->getRoot();
     JsonArray wifiList = root.createNestedArray("wifilist");
 
+    // Print scanned wifi network
     for (int i = 0; i < n; ++i) {
         // Print SSID and RSSI for each network found
         Serial.print(i + 1);
@@ -100,18 +117,22 @@ void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
         Serial.print(")");
         Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
 
+        // Append json data
         wifiList.add(WiFi.SSID(i));
 
         delay(10);
     }
 
+    // Send response
     response->setLength();
     request->send(response);
 }
 
 void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
     Serial.println();
-    Serial.println("Got wifi scan request..");
+    Serial.println("Got wifi connect request..");
+
+    // Process json data
     String jsonData;
     for (size_t i = 0; i < len; i++) {
         jsonData += (char)data[i];
@@ -120,6 +141,7 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     Serial.println("Raw JSON data:");
     Serial.println(jsonData);
 
+    // Decode json data
     StaticJsonDocument<200> doc;
     deserializeJson(doc, jsonData);
     const char* ssid = doc["ssid"];
@@ -129,8 +151,11 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     Serial.println((String)"PASS: " + pass);
     Serial.println();
 
+    // Connect to Access Point
     Serial.print((String)"Connecting to " + ssid);
     unsigned char countToTimeout = 0;
+    WiFi.disconnect();
+    delay(100);
     WiFi.begin(ssid, pass);
     while (WiFi.status() != WL_CONNECTED) {
         delay(100);
@@ -146,9 +171,18 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     Serial.println();
     Serial.println((String)"Connected to " + ssid);
     Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
+    const String ipaddress = WiFi.localIP().toString();
+    Serial.println(ipaddress);
 
-    _successResponse(request, "Done");
+    // Start local dns
+    if (MDNS.begin(HARDWARE_LOCAL_DNS)) {
+        Serial.println((String)"mDNS responder started with " + HARDWARE_LOCAL_DNS + ".local");
+    } else {
+        Serial.println("Error setting up MDNS responder!");
+    }
+
+    // Send success response with ipaddress as message
+    _successResponse(request, ipaddress);
 }
 
 void WifiManager::_errorResponse(AsyncWebServerRequest* request, String msg) {
