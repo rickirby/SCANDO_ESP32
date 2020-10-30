@@ -90,6 +90,8 @@ void WifiManager::_setupServer() {
 void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
     Serial.println();
     Serial.println("Got wifi scan request..");
+
+    // Scan nearby wifi network
     Serial.println("Scanning...");
     int n = WiFi.scanNetworks();
     Serial.println();
@@ -98,11 +100,13 @@ void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
     Serial.print(n);
     Serial.println(" networks found");
 
+    // Prepare json encoder
     AsyncJsonResponse * response = new AsyncJsonResponse();
     response->addHeader("Server","RBQueenMaster");
     JsonObject root = response->getRoot();
     JsonArray wifiList = root.createNestedArray("wifilist");
 
+    // Print scanned wifi network
     for (int i = 0; i < n; ++i) {
         // Print SSID and RSSI for each network found
         Serial.print(i + 1);
@@ -113,11 +117,13 @@ void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
         Serial.print(")");
         Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
 
+        // Append json data
         wifiList.add(WiFi.SSID(i));
 
         delay(10);
     }
 
+    // Send response
     response->setLength();
     request->send(response);
 }
@@ -125,6 +131,8 @@ void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
 void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
     Serial.println();
     Serial.println("Got wifi scan request..");
+
+    // Process json data
     String jsonData;
     for (size_t i = 0; i < len; i++) {
         jsonData += (char)data[i];
@@ -133,6 +141,7 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     Serial.println("Raw JSON data:");
     Serial.println(jsonData);
 
+    // Decode json data
     StaticJsonDocument<200> doc;
     deserializeJson(doc, jsonData);
     const char* ssid = doc["ssid"];
@@ -142,8 +151,11 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     Serial.println((String)"PASS: " + pass);
     Serial.println();
 
+    // Connect to Access Point
     Serial.print((String)"Connecting to " + ssid);
     unsigned char countToTimeout = 0;
+    WiFi.disconnect();
+    delay(100);
     WiFi.begin(ssid, pass);
     while (WiFi.status() != WL_CONNECTED) {
         delay(100);
@@ -162,12 +174,14 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     const String ipaddress = WiFi.localIP().toString();
     Serial.println(ipaddress);
 
-    if (!MDNS.begin("scandohardware")) {
-        Serial.println("Error setting up MDNS responder!");
-    } else {
+    // Start local dns
+    if (MDNS.begin(HARDWARE_LOCAL_DNS)) {
         Serial.println("mDNS responder started");
+    } else {
+        Serial.println("Error setting up MDNS responder!");
     }
 
+    // Send success response with ipaddress as message
     _successResponse(request, ipaddress);
 }
 
