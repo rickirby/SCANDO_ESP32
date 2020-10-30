@@ -130,7 +130,7 @@ void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
 
 void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
     Serial.println();
-    Serial.println("Got wifi scan request..");
+    Serial.println("Got wifi connect request..");
 
     // Process json data
     String jsonData;
@@ -176,7 +176,7 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
 
     // Start local dns
     if (MDNS.begin(HARDWARE_LOCAL_DNS)) {
-        Serial.println("mDNS responder started");
+        Serial.println((String)"mDNS responder started with " + HARDWARE_LOCAL_DNS + ".local");
     } else {
         Serial.println("Error setting up MDNS responder!");
     }
