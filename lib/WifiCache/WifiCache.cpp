@@ -48,7 +48,7 @@ WifiCache::~WifiCache() {
 
 void WifiCache::cacheWifi(char* SSID, char* PASS) {
     _ssid->put(0, SSID);
-    _ssid->put(0, PASS);
+    _pass->put(0, PASS);
 }
 
 char* WifiCache::getCacheSSID() {
