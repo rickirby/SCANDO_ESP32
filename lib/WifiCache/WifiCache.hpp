@@ -24,7 +24,6 @@ static WifiCache* shared();
 void cacheWifi(String SSID, String PASS);
 String getCacheSSID();
 String getCachePASS();
-void clearCache();
 
 private:
 

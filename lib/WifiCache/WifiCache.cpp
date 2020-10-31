@@ -34,14 +34,17 @@ WifiCache::~WifiCache() {
 // MARK: - Public Methods
 
 void WifiCache::cacheWifi(String SSID, String PASS) {
+    // Clear current value
     for (int i = 0; i < 96; i++) {
         EEPROM.write(i, 0);
     }
 
+    // Write SSID value
     for (int i = 0; i < SSID.length(); i++) {
         EEPROM.write(i, SSID[i]);
     }
 
+    // Write PASS value
     for (int i = 0; i < PASS.length(); i++) {
         EEPROM.write(32 + i, PASS[i]);
     }
@@ -65,8 +68,4 @@ String WifiCache::getCachePASS() {
     }
 
     return value;
-}
-
-void WifiCache::clearCache() {
-
 }
