@@ -34,6 +34,10 @@ WifiCache::~WifiCache() {
 // MARK: - Public Methods
 
 void WifiCache::cacheWifi(String SSID, String PASS) {
+    for (int i = 0; i < 96; i++) {
+        EEPROM.write(i, 0);
+    }
+
     for (int i = 0; i < SSID.length(); i++) {
         EEPROM.write(i, SSID[i]);
     }
