@@ -55,35 +55,33 @@ void WifiManager::_setupAccessPoint() {
 }
 
 void WifiManager::_checkWifiCache() {
-    char* savedSSID = WifiCache::shared()->getCacheSSID();
-    char* savedPASS = WifiCache::shared()->getCachePASS();
+    String savedSSID = WifiCache::shared()->getCacheSSID();
+    String savedPASS = WifiCache::shared()->getCachePASS();
 
     Serial.println();
-    Serial.println((String)"Saved SSID: " + savedSSID);
-    Serial.println((String)"Saved PASS: " + savedPASS);
+    Serial.println("Saved SSID: " + savedSSID);
+    Serial.println("Saved PASS: " + savedPASS);
 
-    if (strcmp(savedSSID, "********") != 0) {
-        Serial.print((String)"Connecting to " + savedSSID);
-        unsigned char countToTimeout = 0;
-        WiFi.disconnect();
+    Serial.print((String)"Connecting to " + savedSSID);
+    unsigned char countToTimeout = 0;
+    WiFi.disconnect();
+    delay(100);
+    WiFi.begin(savedSSID.c_str(), savedPASS.c_str());
+    while (WiFi.status() != WL_CONNECTED) {
         delay(100);
-        WiFi.begin(savedSSID, savedPASS);
-        while (WiFi.status() != WL_CONNECTED) {
-            delay(100);
-            Serial.print(".");
-            if (countToTimeout > 30) {
-                Serial.println();
-                Serial.println((String)"Failed connecting to " + savedSSID);
-                return;
-            }
-            countToTimeout++;
+        Serial.print(".");
+        if (countToTimeout > 30) {
+            Serial.println();
+            Serial.println((String)"Failed connecting to " + savedSSID);
+            return;
         }
-        Serial.println();
-        Serial.println((String)"Connected to " + savedSSID);
-        Serial.print("IP address: ");
-        const String ipaddress = WiFi.localIP().toString();
-        Serial.println(ipaddress);
+        countToTimeout++;
     }
+    Serial.println();
+    Serial.println((String)"Connected to " + savedSSID);
+    Serial.print("IP address: ");
+    const String ipaddress = WiFi.localIP().toString();
+    Serial.println(ipaddress);
 }
 
 void WifiManager::_setupServer() {
@@ -210,7 +208,7 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     Serial.println(ipaddress);
 
     // Save Wifi Cache
-    WifiCache::shared()->cacheWifi((char*)ssid, (char*)pass);
+    WifiCache::shared()->cacheWifi(ssid, pass);
 
     // Start local dns
     if (MDNS.begin(HARDWARE_LOCAL_DNS)) {

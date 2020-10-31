@@ -23,22 +23,9 @@ WifiCache* WifiCache::shared() {
 // MARK: - Life Cycles
 
 WifiCache::WifiCache() {
-    _ssid = new EEPROMClass("eeprom0", 16);
-    _pass = new EEPROMClass("eeprom1", 16);
+    EEPROM.begin(512);
 
-    if (!_ssid->begin(_ssid->length())) {
-        Serial.println("Failed to initialise _ssid for cache");
-        Serial.println("Restarting...");
-        delay(1000);
-        ESP.restart();
-    }
-
-    if (!_pass->begin(_pass->length())) {
-        Serial.println("Failed to initialise _pass for cache");
-        Serial.println("Restarting...");
-        delay(1000);
-        ESP.restart();
-    }
+    Serial.println("Success init WifiCache");
 }
 
 WifiCache::~WifiCache() {
@@ -46,23 +33,34 @@ WifiCache::~WifiCache() {
 
 // MARK: - Public Methods
 
-void WifiCache::cacheWifi(char* SSID, char* PASS) {
-    _ssid->put(0, SSID);
-    _pass->put(0, PASS);
+void WifiCache::cacheWifi(String SSID, String PASS) {
+    for (int i = 0; i < SSID.length(); i++) {
+        EEPROM.write(i, SSID[i]);
+    }
+
+    for (int i = 0; i < PASS.length(); i++) {
+        EEPROM.write(32 + i, PASS[i]);
+    }
+
+    EEPROM.commit();
 }
 
-char* WifiCache::getCacheSSID() {
-    char* result;
-    _ssid->get(0, result);
+String WifiCache::getCacheSSID() {
+    String value;
+    for (int i = 0; i < 32; i++) {
+        value += char(EEPROM.read(i));
+    }
 
-    return result;
+    return value;
 }
 
-char* WifiCache::getCachePASS() {
-    char* result;
-    _pass->get(0, result);
+String WifiCache::getCachePASS() {
+    String value;
+    for (int i = 32; i < 96; i++) {
+        value += char(EEPROM.read(i));
+    }
 
-    return result;
+    return value;
 }
 
 void WifiCache::clearCache() {

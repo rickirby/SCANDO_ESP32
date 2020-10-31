@@ -21,9 +21,9 @@ public:
 // Singleton Instance
 static WifiCache* shared();
 
-void cacheWifi(char* SSID, char* PASS);
-char* getCacheSSID();
-char* getCachePASS();
+void cacheWifi(String SSID, String PASS);
+String getCacheSSID();
+String getCachePASS();
 void clearCache();
 
 private:
@@ -31,8 +31,6 @@ private:
 // MARK: - Private Properties
 
 static WifiCache* _instance;
-EEPROMClass* _ssid;
-EEPROMClass* _pass;
 
 // MARK: - Life Cycles, marked as private because it's singeton
 
