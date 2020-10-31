@@ -174,6 +174,9 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     const String ipaddress = WiFi.localIP().toString();
     Serial.println(ipaddress);
 
+    // Save Wifi Cache
+    WifiCache::shared()->cacheWifi((char*)ssid, (char*)pass);
+
     // Start local dns
     if (MDNS.begin(HARDWARE_LOCAL_DNS)) {
         Serial.println((String)"mDNS responder started with " + HARDWARE_LOCAL_DNS + ".local");
