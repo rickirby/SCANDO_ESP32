@@ -106,6 +106,10 @@ void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
     Serial.println();
     Serial.println("Got wifi scan request..");
 
+    // Disconnect from previously wifi first
+    WiFi.disconnect();
+    delay(100);
+
     // Scan nearby wifi network
     Serial.println("Scanning...");
     int n = WiFi.scanNetworks();
