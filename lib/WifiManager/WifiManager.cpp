@@ -29,6 +29,9 @@ void WifiManager::begin() {
     // Access Point Setup
     _setupAccessPoint();
 
+    // Check Saved Wifi Setting
+    _checkWifiCache();
+
     // Server Setup
     _setupServer();
 }
@@ -49,6 +52,38 @@ void WifiManager::_setupAccessPoint() {
     Serial.println((String)"Access Point \"" + _APSSID + "\" has started.");
     Serial.print("Hardware IP Address: ");
     Serial.println(hardwareIPAddress);
+}
+
+void WifiManager::_checkWifiCache() {
+    char* savedSSID = WifiCache::shared()->getCacheSSID();
+    char* savedPASS = WifiCache::shared()->getCachePASS();
+
+    Serial.println();
+    Serial.println((String)"Saved SSID: " + savedSSID);
+    Serial.println((String)"Saved PASS: " + savedPASS);
+
+    if (strcmp(savedSSID, "********") != 0) {
+        Serial.print((String)"Connecting to " + savedSSID);
+        unsigned char countToTimeout = 0;
+        WiFi.disconnect();
+        delay(100);
+        WiFi.begin(savedSSID, savedPASS);
+        while (WiFi.status() != WL_CONNECTED) {
+            delay(100);
+            Serial.print(".");
+            if (countToTimeout > 30) {
+                Serial.println();
+                Serial.println((String)"Failed connecting to " + savedSSID);
+                return;
+            }
+            countToTimeout++;
+        }
+        Serial.println();
+        Serial.println((String)"Connected to " + savedSSID);
+        Serial.print("IP address: ");
+        const String ipaddress = WiFi.localIP().toString();
+        Serial.println(ipaddress);
+    }
 }
 
 void WifiManager::_setupServer() {

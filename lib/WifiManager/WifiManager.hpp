@@ -47,6 +47,7 @@ private:
 
     void _setupWifiMode();
     void _setupAccessPoint();
+    void _checkWifiCache();
     void _setupServer();
     void _scanwifiHandler(AsyncWebServerRequest* request);
     void _connectwifiHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total);
