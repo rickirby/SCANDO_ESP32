@@ -18,6 +18,7 @@ public:
 
 // MARK: - Public Methods
 
+// Singleton Instance
 static WifiCache* shared();
 
 void cacheWifi(char* SSID, char* PASS);

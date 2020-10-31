@@ -23,8 +23,8 @@ WifiCache* WifiCache::shared() {
 // MARK: - Life Cycles
 
 WifiCache::WifiCache() {
-    _ssid = new EEPROMClass("eeprom0", 64);
-    _pass = new EEPROMClass("eeprom1", 64);
+    _ssid = new EEPROMClass("eeprom0", 16);
+    _pass = new EEPROMClass("eeprom1", 16);
 
     if (!_ssid->begin(_ssid->length())) {
         Serial.println("Failed to initialise _ssid for cache");
