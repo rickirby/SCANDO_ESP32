@@ -49,6 +49,7 @@ private:
     void _setupAccessPoint();
     void _setupServer();
     void _checkWifiCache();
+    void _checkresponseHandler(AsyncWebServerRequest* request);
     void _scanwifiHandler(AsyncWebServerRequest* request);
     void _connectwifiHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total);
     String _connectToAccessPoint(char* ssid, char* pass);

@@ -24,8 +24,6 @@ WifiCache* WifiCache::shared() {
 
 WifiCache::WifiCache() {
     EEPROM.begin(512);
-
-    Serial.println("Success init WifiCache");
 }
 
 WifiCache::~WifiCache() {
