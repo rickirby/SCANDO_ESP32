@@ -59,6 +59,15 @@ void WifiManager::_setupServer() {
     Serial.println();
     Serial.println("Starting server...");
 
+    // checkresponse server through GET request
+    server->on(
+        "/checkresponse",
+        HTTP_GET,
+        [this](AsyncWebServerRequest* request) {
+            _checkresponseHandler(request);
+        }
+    );
+
     // scanwifi server through GET request
     server->on(
         "/scanwifi",
@@ -100,6 +109,13 @@ void WifiManager::_checkWifiCache() {
     }
 
     _setupDNS();
+}
+
+void WifiManager::_checkresponseHandler(AsyncWebServerRequest* request) {
+    Serial.println();
+    Serial.println("Got check response request..");
+    
+    _successResponse(request, "OK");
 }
 
 void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
