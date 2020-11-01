@@ -16,7 +16,8 @@
 #include <ESPmDNS.h>
 #include <AsyncJson.h>
 #include <ArduinoJson.h>
-#include "PROJECT_CONSTANT.h"
+#include <PROJECT_CONSTANT.h>
+#include <WifiCache.hpp>
 
 class WifiManager {
 
@@ -47,8 +48,11 @@ private:
     void _setupWifiMode();
     void _setupAccessPoint();
     void _setupServer();
+    void _checkWifiCache();
     void _scanwifiHandler(AsyncWebServerRequest* request);
     void _connectwifiHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total);
+    String _connectToAccessPoint(char* ssid, char* pass);
+    void _setupDNS();
     void _errorResponse(AsyncWebServerRequest* request, String msg);
     void _successResponse(AsyncWebServerRequest* request, String msg);
 

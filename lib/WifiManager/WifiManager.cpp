@@ -31,6 +31,9 @@ void WifiManager::begin() {
 
     // Server Setup
     _setupServer();
+
+    // Check Saved Wifi Setting
+    _checkWifiCache();
 }
 
 // MARK: - Private Methods
@@ -87,9 +90,25 @@ void WifiManager::_setupServer() {
     Serial.println("Server Started!");
 }
 
+void WifiManager::_checkWifiCache() {
+    String savedSSID = WifiCache::shared()->getCacheSSID();
+    String savedPASS = WifiCache::shared()->getCachePASS();
+
+    String ipaddress = _connectToAccessPoint((char*)savedSSID.c_str(), (char*)savedPASS.c_str());
+    if (ipaddress.isEmpty()) {
+        return;
+    }
+
+    _setupDNS();
+}
+
 void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
     Serial.println();
     Serial.println("Got wifi scan request..");
+
+    // Disconnect from previously wifi first
+    WiFi.disconnect();
+    delay(100);
 
     // Scan nearby wifi network
     Serial.println("Scanning...");
@@ -152,6 +171,23 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     Serial.println();
 
     // Connect to Access Point
+    const String ipaddress = _connectToAccessPoint((char*)ssid, (char*)pass);
+    if (ipaddress.isEmpty()) {
+        _errorResponse(request, "Could not connect");
+        return;
+    }
+
+    // Save Wifi Cache
+    WifiCache::shared()->cacheWifi(ssid, pass);
+
+    // Start local dns
+    _setupDNS();
+
+    // Send success response with ipaddress as message
+    _successResponse(request, ipaddress);
+}
+
+String WifiManager::_connectToAccessPoint(char* ssid, char* pass) {
     Serial.print((String)"Connecting to " + ssid);
     unsigned char countToTimeout = 0;
     WiFi.disconnect();
@@ -163,8 +199,8 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
         if (countToTimeout > 30) {
             Serial.println();
             Serial.println((String)"Failed connecting to " + ssid);
-            _errorResponse(request, "Could not connect");
-            return;
+            // _errorResponse(request, "Could not connect");
+            return "";
         }
         countToTimeout++;
     }
@@ -174,15 +210,15 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     const String ipaddress = WiFi.localIP().toString();
     Serial.println(ipaddress);
 
-    // Start local dns
+    return ipaddress;
+}
+
+void WifiManager::_setupDNS() {
     if (MDNS.begin(HARDWARE_LOCAL_DNS)) {
         Serial.println((String)"mDNS responder started with " + HARDWARE_LOCAL_DNS + ".local");
     } else {
         Serial.println("Error setting up MDNS responder!");
     }
-
-    // Send success response with ipaddress as message
-    _successResponse(request, ipaddress);
 }
 
 void WifiManager::_errorResponse(AsyncWebServerRequest* request, String msg) {
