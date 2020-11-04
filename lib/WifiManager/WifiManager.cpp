@@ -14,6 +14,9 @@ WifiManager::WifiManager(char* APSSID, char* APPASS) {
     _APSSID = APSSID;
     _APPASS = APPASS;
 
+    _isBusy = false;
+    _indicatorCount = 0;
+
     server = new AsyncWebServer(80);
 }
 
@@ -23,6 +26,8 @@ WifiManager::~WifiManager() {
 // MARK: - Public Methods
 
 void WifiManager::begin() {
+    _isBusy = true;
+
     // Set WiFi to both mode
     _setupWifiMode();
 
@@ -37,10 +42,12 @@ void WifiManager::begin() {
 
     // Set Build in LED as Output as connection status
     pinMode(LED_BUILTIN, OUTPUT);
+
+    _isBusy = false;
 }
 
 void WifiManager::checkWifiStatus() {
-    if (WiFi.status() != WL_CONNECTED) {
+    if ((WiFi.status() != WL_CONNECTED) && !_isBusy) {
         Serial.println("WiFi not connected");
         for (int i = 0; i < 3; i++) {
             digitalWrite(LED_BUILTIN, HIGH);
@@ -49,8 +56,15 @@ void WifiManager::checkWifiStatus() {
             delay(200);
         }
         
-        _connectSavedWifi();
+        if (_indicatorCount > 3) {
+            _connectSavedWifi();
+            _indicatorCount = 0;
+        }
+
+        _indicatorCount++;
     }
+
+    delay(5000);
 }
 
 // MARK: - Private Methods
@@ -129,13 +143,16 @@ void WifiManager::_connectSavedWifi() {
 }
 
 void WifiManager::_checkresponseHandler(AsyncWebServerRequest* request) {
+    _isBusy = true;
     Serial.println();
     Serial.println("Got check response request..");
     
     _successResponse(request, "OK");
+    _isBusy = false;
 }
 
 void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
+    _isBusy = true;
     Serial.println();
     Serial.println("Got wifi scan request..");
 
@@ -178,9 +195,11 @@ void WifiManager::_scanwifiHandler(AsyncWebServerRequest* request) {
     // Send response
     response->setLength();
     request->send(response);
+    _isBusy = false;
 }
 
 void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
+    _isBusy = true;
     Serial.println();
     Serial.println("Got wifi connect request..");
 
@@ -207,6 +226,7 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     const String ipaddress = _connectToAccessPoint((char*)ssid, (char*)pass);
     if (ipaddress.isEmpty()) {
         _errorResponse(request, "Could not connect");
+        _isBusy = false;
         return;
     }
 
@@ -218,6 +238,7 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
 
     // Send success response with ipaddress as message
     _successResponse(request, ipaddress);
+    _isBusy = false;
 }
 
 String WifiManager::_connectToAccessPoint(char* ssid, char* pass) {

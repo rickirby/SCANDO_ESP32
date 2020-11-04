@@ -44,6 +44,9 @@ private:
     char* _APSSID;
     char* _APPASS;
 
+    bool _isBusy;
+    char _indicatorCount;
+
     // MARK: - Private Methods
 
     void _setupWifiMode();
