@@ -99,7 +99,7 @@ void WifiManager::_setupServer() {
     Serial.println("Server Started!");
 }
 
-void WifiManager::_checkWifiCache() {
+void WifiManager::_connectSavedWifi() {
     String savedSSID = WifiCache::shared()->getCacheSSID();
     String savedPASS = WifiCache::shared()->getCachePASS();
 
