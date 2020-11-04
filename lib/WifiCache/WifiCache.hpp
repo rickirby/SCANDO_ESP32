@@ -16,10 +16,10 @@ class WifiCache {
 
 public:
 
-// MARK: - Public Methods
-
 // Singleton Instance
 static WifiCache* shared();
+
+// MARK: - Public Methods
 
 void cacheWifi(String SSID, String PASS);
 String getCacheSSID();

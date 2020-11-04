@@ -35,6 +35,7 @@ public:
     // MARK: - Public Methods
 
     void begin();
+    void checkWifiStatus();
 
 private:
 
@@ -43,12 +44,15 @@ private:
     char* _APSSID;
     char* _APPASS;
 
+    bool _isBusy;
+    char _indicatorCount;
+
     // MARK: - Private Methods
 
     void _setupWifiMode();
     void _setupAccessPoint();
     void _setupServer();
-    void _checkWifiCache();
+    void _connectSavedWifi();
     void _checkresponseHandler(AsyncWebServerRequest* request);
     void _scanwifiHandler(AsyncWebServerRequest* request);
     void _connectwifiHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total);

@@ -6,14 +6,16 @@
 #include <WifiManager.hpp>
 #include <PROJECT_CONSTANT.h>
 
+WifiManager* wifiManager;
+
 void commonSetting() {
     Serial.begin(115200);
     ProjectHeader::loadHeader();
 }
 
 void wifiSetting() {
-    WifiManager wifiManager((char*)HARDWARE_SSID, (char*)HARDWARE_PASS);
-    wifiManager.begin();
+    wifiManager = new WifiManager((char*)HARDWARE_SSID, (char*)HARDWARE_PASS);
+    wifiManager->begin();
 }
 
 void setup() {
@@ -22,5 +24,5 @@ void setup() {
 }
 
 void loop() {
-
+    wifiManager->checkWifiStatus();
 }
