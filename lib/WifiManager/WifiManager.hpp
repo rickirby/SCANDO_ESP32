@@ -35,6 +35,7 @@ public:
     // MARK: - Public Methods
 
     void begin();
+    void checkWifiStatus();
 
 private:
 

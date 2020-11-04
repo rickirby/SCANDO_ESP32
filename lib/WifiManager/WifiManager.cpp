@@ -33,7 +33,24 @@ void WifiManager::begin() {
     _setupServer();
 
     // Check Saved Wifi Setting
-    _checkWifiCache();
+    _connectSavedWifi();
+
+    // Set Build in LED as Output as connection status
+    pinMode(LED_BUILTIN, OUTPUT);
+}
+
+void WifiManager::checkWifiStatus() {
+    if (WiFi.status() != WL_CONNECTED) {
+        Serial.println("WiFi not connected");
+        for (int i = 0; i < 3; i++) {
+            digitalWrite(LED_BUILTIN, HIGH);
+            delay(200);
+            digitalWrite(LED_BUILTIN, LOW);
+            delay(200);
+        }
+        
+        _connectSavedWifi();
+    }
 }
 
 // MARK: - Private Methods
