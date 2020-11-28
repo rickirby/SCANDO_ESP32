@@ -264,7 +264,14 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
 }
 
 void WifiManager::_directConnectionHandler(AsyncWebServerRequest* request) {
+    _isBusy = true;
+    Serial.println();
+    Serial.println("Got direct connection request..");
 
+    WifiCache::shared()->cacheWifi("NO_SHARED_WIFI", "NO_SHARED_WIFI");
+
+    _successResponse(request, "OK");
+    _isBusy = false;
 }
 
 void WifiManager::_senddataHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
