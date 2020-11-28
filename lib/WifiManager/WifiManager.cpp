@@ -127,6 +127,14 @@ void WifiManager::_setupServer() {
         }
     );
 
+    server->on(
+        "/directconnection",
+        HTTP_GET,
+        [this](AsyncWebServerRequest* request) {
+            _directConnectionHandler(request);
+        }
+    );
+
     // senddata server through POST request
     server->on(
         "/senddata",
@@ -252,6 +260,19 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
 
     // Send success response with ipaddress as message
     _successResponse(request, ipaddress);
+    _isBusy = false;
+}
+
+void WifiManager::_directConnectionHandler(AsyncWebServerRequest* request) {
+    _isBusy = true;
+    Serial.println();
+    Serial.println("Got direct connection request..");
+
+    WifiCache::shared()->cacheWifi("NO_SHARED_WIFI", "NO_SHARED_WIFI");
+    WiFi.disconnect();
+    delay(100);
+
+    _successResponse(request, "OK");
     _isBusy = false;
 }
 
