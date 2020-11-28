@@ -34,6 +34,9 @@ void WifiManager::begin() {
     // Access Point Setup
     _setupAccessPoint();
 
+    // Start local dns
+    _setupDNS();
+
     // Server Setup
     _setupServer();
 
@@ -138,8 +141,6 @@ void WifiManager::_connectSavedWifi() {
     if (ipaddress.isEmpty()) {
         return;
     }
-
-    _setupDNS();
 }
 
 void WifiManager::_checkresponseHandler(AsyncWebServerRequest* request) {
@@ -232,9 +233,6 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
 
     // Save Wifi Cache
     WifiCache::shared()->cacheWifi(ssid, pass);
-
-    // Start local dns
-    _setupDNS();
 
     // Send success response with ipaddress as message
     _successResponse(request, ipaddress);
