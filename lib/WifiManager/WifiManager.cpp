@@ -241,6 +241,33 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     _isBusy = false;
 }
 
+void WifiManager::_senddataHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
+    _isBusy = true;
+    Serial.println();
+    Serial.println("Got send data request..");
+
+    // Process json data
+    String jsonData;
+    for (size_t i = 0; i < len; i++) {
+        jsonData += (char)data[i];
+    }
+    
+    Serial.println("Raw JSON data:");
+    Serial.println(jsonData);
+
+    // Decode json data
+    StaticJsonDocument<200> doc;
+    deserializeJson(doc, jsonData);
+    const char* textData = doc["data"];
+
+    Serial.println();
+    Serial.println(textData);
+    Serial.println();
+
+    _successResponse(request, "OK");
+    _isBusy = false;
+}
+
 String WifiManager::_connectToAccessPoint(char* ssid, char* pass) {
     Serial.print((String)"Connecting to " + ssid);
     unsigned char countToTimeout = 0;
