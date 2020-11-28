@@ -50,6 +50,11 @@ void WifiManager::begin() {
 }
 
 void WifiManager::checkWifiStatus() {
+    String savedSSID = WifiCache::shared()->getCacheSSID();
+    if (savedSSID == "NO_SHARED_WIFI") {
+        return;
+    }
+
     if ((WiFi.status() != WL_CONNECTED) && !_isBusy) {
         Serial.println("WiFi not connected");
         for (int i = 0; i < 3; i++) {
@@ -119,6 +124,15 @@ void WifiManager::_setupServer() {
         NULL,
         [this](AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
             _connectwifiHandler(request, data, len, index, total);
+        }
+    );
+
+    // directconnection server through GET request
+    server->on(
+        "/directconnection",
+        HTTP_GET,
+        [this](AsyncWebServerRequest* request) {
+            _directConnectionHandler(request);
         }
     );
 
@@ -247,6 +261,19 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
 
     // Send success response with ipaddress as message
     _successResponse(request, ipaddress);
+    _isBusy = false;
+}
+
+void WifiManager::_directConnectionHandler(AsyncWebServerRequest* request) {
+    _isBusy = true;
+    Serial.println();
+    Serial.println("Got direct connection request..");
+
+    WifiCache::shared()->cacheWifi("NO_SHARED_WIFI", "NO_SHARED_WIFI");
+    WiFi.disconnect();
+    delay(100);
+
+    _successResponse(request, "OK");
     _isBusy = false;
 }
 
