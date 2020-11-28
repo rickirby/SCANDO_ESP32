@@ -41,3 +41,7 @@ void ProjectSetting::_centerText(String text, char containerLength) {
     }
     Serial.println(text);
 }
+
+void ProjectSetting::_resetToFactorySetting() {
+    
+}

@@ -10,7 +10,8 @@
 #define ProjectSetting_hpp
 
 #include <WiFi.h>
-#include "PROJECT_INFO.h"
+#include <PROJECT_INFO.h>
+#include <WifiCache.hpp>
 
 class ProjectSetting {
 
@@ -26,6 +27,7 @@ private:
 
     static void _makeLine(char length);
     static void _centerText(String text, char containerLength);
+    static void _resetToFactorySetting();
 
 };
 
