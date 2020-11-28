@@ -9,8 +9,7 @@
 #ifndef PROJECT_CONSTANT_h
 #define PROJECT_CONSTANT_h
 
-#define HARDWARE_SSID "ESP32"
-#define HARDWARE_PASS "12345678"
+#define HARDWARE_PRODUCT_ID "134679"
 #define HARDWARE_LOCAL_DNS "scandohardware"
 
 #endif /* PROJECT_CONSTANT_h */
