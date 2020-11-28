@@ -14,7 +14,9 @@ void commonSetting() {
 }
 
 void wifiSetting() {
-    wifiManager = new WifiManager((char*)HARDWARE_SSID, (char*)HARDWARE_PASS);
+    String ssid = HARDWARE_PRODUCT_ID;
+    String pass = (String)"pass" + (String)HARDWARE_PRODUCT_ID;
+    wifiManager = new WifiManager((char*)ssid.c_str(), (char*)pass.c_str());
     wifiManager->begin();
 }
 
