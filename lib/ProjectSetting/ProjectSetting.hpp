@@ -1,18 +1,19 @@
 //
-//  ProjectHeader.hpp
+//  ProjectSetting.hpp
 //  RBQueenMaster
 //
 //  Created by Ricki Bin Yamin on 28/10/20.
 //  Copyright © 2020 Ricki Bin Yamin. All rights reserved.
 //
 
-#ifndef ProjectHeader_hpp
-#define ProjectHeader_hpp
+#ifndef ProjectSetting_hpp
+#define ProjectSetting_hpp
 
 #include <WiFi.h>
-#include "PROJECT_INFO.h"
+#include <PROJECT_INFO.h>
+#include <WifiCache.hpp>
 
-class ProjectHeader {
+class ProjectSetting {
 
 public:
 
@@ -26,7 +27,8 @@ private:
 
     static void _makeLine(char length);
     static void _centerText(String text, char containerLength);
+    static void _resetToFactorySetting();
 
 };
 
-#endif /* ProjectHeader_hpp */
+#endif /* ProjectSetting_hpp */

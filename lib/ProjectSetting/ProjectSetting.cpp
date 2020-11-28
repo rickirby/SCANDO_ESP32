@@ -1,16 +1,16 @@
 //
-//  ProjectHeader.cpp
+//  ProjectSetting.cpp
 //  RBQueenMaster
 //
 //  Created by Ricki Bin Yamin on 28/10/20.
 //  Copyright © 2020 Ricki Bin Yamin. All rights reserved.
 //
 
-#include "ProjectHeader.hpp"
+#include "ProjectSetting.hpp"
 
 // MARK: - Public Methods
 
-void ProjectHeader::loadHeader() {
+void ProjectSetting::loadHeader() {
 
     Serial.println();
     _makeLine(66);
@@ -24,7 +24,7 @@ void ProjectHeader::loadHeader() {
 
 // MARK: - Private Methods
 
-void ProjectHeader::_makeLine(char length) {
+void ProjectSetting::_makeLine(char length) {
     char i = length;
     while (i) {
         Serial.print("=");
@@ -33,11 +33,15 @@ void ProjectHeader::_makeLine(char length) {
     Serial.println();
 }
 
-void ProjectHeader::_centerText(String text, char containerLength) {
+void ProjectSetting::_centerText(String text, char containerLength) {
     unsigned char spaces = (containerLength - text.length()) / 2;
     while (spaces) {
         Serial.print(" ");
         spaces--;
     }
     Serial.println(text);
+}
+
+void ProjectSetting::_resetToFactorySetting() {
+    WifiCache::shared()->cacheWifi("FACTORY_SETTING", "FACTORY_SETTING");
 }
