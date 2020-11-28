@@ -22,6 +22,27 @@ void ProjectSetting::loadHeader() {
     Serial.println();
 }
 
+void ProjectSetting::checkIfFactoryResetTriggered() {
+    pinMode(15, INPUT_PULLUP);
+    delay(100);
+
+    unsigned char checkCount = 8;
+
+    while (!digitalRead(15)) {
+        if (checkCount == 0) {
+            _resetToFactorySetting();
+            break;
+        }
+
+        delay(1000);
+        Serial.println("Factory Reset Triggered");
+        Serial.print("Check count: ");
+        Serial.println(checkCount);
+        checkCount--;
+    }
+     
+}
+
 // MARK: - Private Methods
 
 void ProjectSetting::_makeLine(char length) {
@@ -44,4 +65,7 @@ void ProjectSetting::_centerText(String text, char containerLength) {
 
 void ProjectSetting::_resetToFactorySetting() {
     WifiCache::shared()->cacheWifi("FACTORY_SETTING", "FACTORY_SETTING");
+    Serial.println();
+    Serial.println("Done Resetting to Factory Setting");
+    Serial.println();
 }

@@ -20,6 +20,7 @@ public:
     // MARK: - Public Methods
 
     static void loadHeader();
+    static void checkIfFactoryResetTriggered();
 
 private:
 

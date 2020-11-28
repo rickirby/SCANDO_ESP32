@@ -11,6 +11,7 @@ WifiManager* wifiManager;
 void commonSetting() {
     Serial.begin(115200);
     ProjectSetting::loadHeader();
+    ProjectSetting::checkIfFactoryResetTriggered();
 }
 
 void wifiSetting() {
