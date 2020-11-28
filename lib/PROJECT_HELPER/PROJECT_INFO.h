@@ -10,7 +10,7 @@
 #define PROJECT_INFO_h
 
 #define PROJECT_NAME "RB_QueenMaster_Esp"
-#define PROJECT_VERSION "0.0.2"
+#define PROJECT_VERSION "0.0.3"
 #define PROJECT_OWNER "Ricki Bin Yamin"
 
 #endif /* PROJECT_INFO_h */
