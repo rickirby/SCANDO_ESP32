@@ -64,7 +64,7 @@ void ProjectSetting::_centerText(String text, char containerLength) {
 }
 
 void ProjectSetting::_resetToFactorySetting() {
-    WifiCache::shared()->cacheWifi("FACTORY_SETTING", "FACTORY_SETTING");
+    WifiCache::shared()->cacheWifi("NO_SHARED_WIFI", "NO_SHARED_WIFI");
     Serial.println();
     Serial.println("Done Resetting to Factory Setting");
     Serial.println();
