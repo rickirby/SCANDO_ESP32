@@ -127,6 +127,7 @@ void WifiManager::_setupServer() {
         }
     );
 
+    // directconnection server through GET request
     server->on(
         "/directconnection",
         HTTP_GET,
