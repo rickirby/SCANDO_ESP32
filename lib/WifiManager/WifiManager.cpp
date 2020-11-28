@@ -119,6 +119,17 @@ void WifiManager::_setupServer() {
         }
     );
 
+    // senddata server through POST request
+    server->on(
+        "/senddata",
+        HTTP_POST,
+        [](AsyncWebServerRequest* request) {},
+        NULL,
+        [this](AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
+            _senddataHandler(request, data, len, index, total);
+        }
+    );
+
     // not found handler
     server->onNotFound(
         [](AsyncWebServerRequest* request) {
