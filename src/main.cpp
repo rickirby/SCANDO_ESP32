@@ -2,7 +2,7 @@
 #include <WiFiClient.h>
 #include <WiFiAP.h>
 #include <ESPAsyncWebServer.h>
-#include <ProjectHeader.hpp>
+#include <ProjectSetting.hpp>
 #include <WifiManager.hpp>
 #include <PROJECT_CONSTANT.h>
 
@@ -10,7 +10,7 @@ WifiManager* wifiManager;
 
 void commonSetting() {
     Serial.begin(115200);
-    ProjectHeader::loadHeader();
+    ProjectSetting::loadHeader();
 }
 
 void wifiSetting() {
