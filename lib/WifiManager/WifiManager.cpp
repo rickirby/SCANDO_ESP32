@@ -34,6 +34,9 @@ void WifiManager::begin() {
     // Access Point Setup
     _setupAccessPoint();
 
+    // Start local dns
+    _setupDNS();
+
     // Server Setup
     _setupServer();
 
@@ -119,6 +122,17 @@ void WifiManager::_setupServer() {
         }
     );
 
+    // senddata server through POST request
+    server->on(
+        "/senddata",
+        HTTP_POST,
+        [](AsyncWebServerRequest* request) {},
+        NULL,
+        [this](AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
+            _senddataHandler(request, data, len, index, total);
+        }
+    );
+
     // not found handler
     server->onNotFound(
         [](AsyncWebServerRequest* request) {
@@ -138,8 +152,6 @@ void WifiManager::_connectSavedWifi() {
     if (ipaddress.isEmpty()) {
         return;
     }
-
-    _setupDNS();
 }
 
 void WifiManager::_checkresponseHandler(AsyncWebServerRequest* request) {
@@ -233,11 +245,35 @@ void WifiManager::_connectwifiHandler(AsyncWebServerRequest* request, uint8_t* d
     // Save Wifi Cache
     WifiCache::shared()->cacheWifi(ssid, pass);
 
-    // Start local dns
-    _setupDNS();
-
     // Send success response with ipaddress as message
     _successResponse(request, ipaddress);
+    _isBusy = false;
+}
+
+void WifiManager::_senddataHandler(AsyncWebServerRequest* request, uint8_t* data, size_t len, size_t index, size_t total) {
+    _isBusy = true;
+    Serial.println();
+    Serial.println("Got send data request..");
+
+    // Process json data
+    String jsonData;
+    for (size_t i = 0; i < len; i++) {
+        jsonData += (char)data[i];
+    }
+    
+    Serial.println("Raw JSON data:");
+    Serial.println(jsonData);
+
+    // Decode json data
+    StaticJsonDocument<200> doc;
+    deserializeJson(doc, jsonData);
+    const char* textData = doc["data"];
+
+    Serial.println();
+    Serial.println(textData);
+    Serial.println();
+
+    _successResponse(request, "OK");
     _isBusy = false;
 }
 
