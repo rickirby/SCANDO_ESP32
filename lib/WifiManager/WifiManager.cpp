@@ -50,6 +50,11 @@ void WifiManager::begin() {
 }
 
 void WifiManager::checkWifiStatus() {
+    String savedSSID = WifiCache::shared()->getCacheSSID();
+    if (savedSSID == "NO_SHARED_WIFI") {
+        return;
+    }
+
     if ((WiFi.status() != WL_CONNECTED) && !_isBusy) {
         Serial.println("WiFi not connected");
         for (int i = 0; i < 3; i++) {
