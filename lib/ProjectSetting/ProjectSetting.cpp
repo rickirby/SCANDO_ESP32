@@ -43,5 +43,5 @@ void ProjectSetting::_centerText(String text, char containerLength) {
 }
 
 void ProjectSetting::_resetToFactorySetting() {
-    
+    WifiCache::shared()->cacheWifi("FACTORY_SETTING", "FACTORY_SETTING");
 }
