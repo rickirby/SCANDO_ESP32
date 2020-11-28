@@ -269,6 +269,8 @@ void WifiManager::_directConnectionHandler(AsyncWebServerRequest* request) {
     Serial.println("Got direct connection request..");
 
     WifiCache::shared()->cacheWifi("NO_SHARED_WIFI", "NO_SHARED_WIFI");
+    WiFi.disconnect();
+    delay(100);
 
     _successResponse(request, "OK");
     _isBusy = false;
