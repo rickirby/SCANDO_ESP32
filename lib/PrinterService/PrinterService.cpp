@@ -43,9 +43,18 @@ PrinterService::~PrinterService() {
 // MARK: - Private Method
 
 void PrinterService::_parallelizeData(unsigned char data) {
-
+    digitalWrite(_D7, (data & (1 << 7)) >> 7);
+    digitalWrite(_D6, (data & (1 << 6)) >> 6);
+    digitalWrite(_D5, (data & (1 << 5)) >> 5);
+    digitalWrite(_D4, (data & (1 << 4)) >> 4);
+    digitalWrite(_D3, (data & (1 << 3)) >> 3);
+    digitalWrite(_D2, (data & (1 << 2)) >> 2);
+    digitalWrite(_D1, (data & (1 << 1)) >> 1);
+    digitalWrite(_D0, (data & (1 << 0)) >> 0);
 }
 
 void PrinterService::_tickStrobe() {
-
+    digitalWrite(_strobe, LOW);
+    delay(50);
+    digitalWrite(_strobe, HIGH);
 }
