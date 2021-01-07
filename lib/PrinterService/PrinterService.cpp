@@ -25,6 +25,8 @@ PrinterService::PrinterService(int busy, int strobe, int D7, int D6, int D5, int
     _D1 = D1;
     _D0 = D0;
 
+    _printingData = "";
+
     pinMode(busy, INPUT_PULLUP);
     pinMode(strobe, OUTPUT);
     pinMode(D7, OUTPUT);
@@ -46,21 +48,15 @@ PrinterService::~PrinterService() {
 // MARK: - Public Method
 
 void PrinterService::braillePrint(const char* data) {
-    // TODO: perlu di test dahulu apakah data dari perangkat mobile sudah mengandung CR+LF untuk new line atau belum. jika belum, perlu ditambahkan logic di sini.
-    _sendBufferData(data);
-    _endBuffer();
+    _printingData = data;
+}
 
-    Serial.println("DATA TESTING");
-    
-    // while (*data) {
-    //     Serial.print("-");
-    //     Serial.print(*data);
-    //     data++;
-    // }
-
-    // TODO: Use Arduino's String not string instead of char*
-    // Serial.println(data);
-    Serial.println("DONE");
+void PrinterService::executePrint() {
+    if (*_printingData) {
+        _sendBufferData(_printingData);
+        _endBuffer();
+        _printingData = "";
+    }
 }
 
 // MARK: - Private Method
@@ -74,6 +70,9 @@ void PrinterService::_parallelizeData(char data) {
     digitalWrite(_D2, (data & (1 << 2)) >> 2);
     digitalWrite(_D1, (data & (1 << 1)) >> 1);
     digitalWrite(_D0, (data & (1 << 0)) >> 0);
+
+    Serial.print("-");
+    Serial.print(data);
 }
 
 void PrinterService::_tickStrobe() {
@@ -87,15 +86,15 @@ void PrinterService::_sendBufferData(const char* data) {
 
         // Checking busy line
 
-        int timeout = 500;
-        while (digitalRead(_busy)) {
-            delay(10);
-            if (!timeout) {
-                break;
-            }
+        // int timeout = 500;
+        // while (digitalRead(_busy)) {
+        //     delay(10);
+        //     if (!timeout) {
+        //         break;
+        //     }
 
-            timeout--;
-        }
+        //     timeout--;
+        // }
 
         _parallelizeData(*data);
         _tickStrobe();
@@ -107,15 +106,15 @@ void PrinterService::_sendBufferData(const char* data) {
 void PrinterService::_endBuffer() {
     // Checking busy line
 
-        int timeout = 500;
-        while (digitalRead(_busy)) {
-            delay(10);
-            if (!timeout) {
-                break;
-            }
+        // int timeout = 500;
+        // while (digitalRead(_busy)) {
+        //     delay(10);
+        //     if (!timeout) {
+        //         break;
+        //     }
 
-            timeout--;
-        }
+        //     timeout--;
+        // }
 
         _parallelizeData(0x0A);
         _parallelizeData(0x00);

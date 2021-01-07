@@ -39,15 +39,14 @@ void Task1code(void* pvParameters ){
 
 void Task2code(void* pvParameters ){
     while(true) {
-        Serial.println("Task2");
-        delay(300);
+        printerService->executePrint();
     }
 }
 
 void configureTask() {
     xTaskCreatePinnedToCore(Task1code, "Task1", 10000, NULL, 1, &Task1, 0);
     delay(500); 
-    
+
     xTaskCreatePinnedToCore(Task2code, "Task2", 10000, NULL, 1, &Task2, 1);          /* pin task to core 1 */
     delay(500); 
 }
