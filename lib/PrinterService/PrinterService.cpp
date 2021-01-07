@@ -46,6 +46,7 @@ PrinterService::~PrinterService() {
 // MARK: - Public Method
 
 void PrinterService::braillePrint(char* data) {
+    // TODO: perlu di test dahulu apakah data dari perangkat mobile sudah mengandung CR+LF untuk new line atau belum. jika belum, perlu ditambahkan logic di sini.
     _sendBufferData(data);
     _endBuffer();
 }
