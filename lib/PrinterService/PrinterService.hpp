@@ -30,8 +30,9 @@ int _D7, _D6, _D5, _D4, _D3, _D2, _D1, _D0;
 
 // MARK: - Private Method
 
-void _parallelizeData(unsigned char data);
+void _parallelizeData(char data);
 void _tickStrobe();
+void _sendBufferData(char* data);
 
 };
 

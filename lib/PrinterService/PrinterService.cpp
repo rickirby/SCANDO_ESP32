@@ -12,6 +12,8 @@
 
 PrinterService::PrinterService(int busy, int strobe, int D7, int D6, int D5, int D4, int D3, int D2, int D1, int D0) {
     
+    // Constructor
+
     _busy = busy;
     _strobe = strobe;
     _D7 = D7;
@@ -38,11 +40,12 @@ PrinterService::PrinterService(int busy, int strobe, int D7, int D6, int D5, int
 }
 
 PrinterService::~PrinterService() {
+    // Destructor
 }
 
 // MARK: - Private Method
 
-void PrinterService::_parallelizeData(unsigned char data) {
+void PrinterService::_parallelizeData(char data) {
     digitalWrite(_D7, (data & (1 << 7)) >> 7);
     digitalWrite(_D6, (data & (1 << 6)) >> 6);
     digitalWrite(_D5, (data & (1 << 5)) >> 5);
@@ -57,4 +60,26 @@ void PrinterService::_tickStrobe() {
     digitalWrite(_strobe, LOW);
     delay(50);
     digitalWrite(_strobe, HIGH);
+}
+
+void PrinterService::_sendBufferData(char* data) {
+    while (*data) {
+
+        // Checking busy line
+
+        int timeout = 500;
+        while (digitalRead(_busy)) {
+            delay(10);
+            if (!timeout) {
+                break;
+            }
+
+            timeout--;
+        }
+
+        _parallelizeData(*data);
+        _tickStrobe();
+
+        data++;
+    }
 }
