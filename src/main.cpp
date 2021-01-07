@@ -5,6 +5,7 @@
 #include <ProjectSetting.hpp>
 #include <WifiManager.hpp>
 #include <PROJECT_CONSTANT.h>
+#include <PrinterService.hpp>
 
 WifiManager* wifiManager;
 
