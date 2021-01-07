@@ -43,6 +43,13 @@ PrinterService::~PrinterService() {
     // Destructor
 }
 
+// MARK: - Public Method
+
+void PrinterService::braillePrint(char* data) {
+    _sendBufferData(data);
+    _endBuffer();
+}
+
 // MARK: - Private Method
 
 void PrinterService::_parallelizeData(char data) {
@@ -82,4 +89,22 @@ void PrinterService::_sendBufferData(char* data) {
 
         data++;
     }
+}
+
+void PrinterService::_endBuffer() {
+    // Checking busy line
+
+        int timeout = 500;
+        while (digitalRead(_busy)) {
+            delay(10);
+            if (!timeout) {
+                break;
+            }
+
+            timeout--;
+        }
+
+        _parallelizeData(0x0A);
+        _parallelizeData(0x00);
+        _tickStrobe();
 }
