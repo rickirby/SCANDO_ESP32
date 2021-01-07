@@ -45,10 +45,22 @@ PrinterService::~PrinterService() {
 
 // MARK: - Public Method
 
-void PrinterService::braillePrint(char* data) {
+void PrinterService::braillePrint(const char* data) {
     // TODO: perlu di test dahulu apakah data dari perangkat mobile sudah mengandung CR+LF untuk new line atau belum. jika belum, perlu ditambahkan logic di sini.
     _sendBufferData(data);
     _endBuffer();
+
+    Serial.println("DATA TESTING");
+    
+    // while (*data) {
+    //     Serial.print("-");
+    //     Serial.print(*data);
+    //     data++;
+    // }
+
+    // TODO: Use Arduino's String not string instead of char*
+    // Serial.println(data);
+    Serial.println("DONE");
 }
 
 // MARK: - Private Method
@@ -70,7 +82,7 @@ void PrinterService::_tickStrobe() {
     digitalWrite(_strobe, HIGH);
 }
 
-void PrinterService::_sendBufferData(char* data) {
+void PrinterService::_sendBufferData(const char* data) {
     while (*data) {
 
         // Checking busy line

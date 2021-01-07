@@ -301,9 +301,8 @@ void WifiManager::_senddataHandler(AsyncWebServerRequest* request, uint8_t* data
     Serial.println();
     Serial.println(textData);
     Serial.println();
-
     _successResponse(request, "OK");
-    _printerService->braillePrint((char*)textData);
+    _printerService->braillePrint(textData);
     _isBusy = false;
 }
 

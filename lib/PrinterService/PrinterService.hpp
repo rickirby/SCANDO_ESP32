@@ -22,7 +22,7 @@ PrinterService(int busy, int strobe, int D7, int D6, int D5, int D4, int D3, int
 
 // MARK: - Public Method
 
-void braillePrint(char* data);
+void braillePrint(const char* data);
 
 private:
 
@@ -36,7 +36,7 @@ int _D7, _D6, _D5, _D4, _D3, _D2, _D1, _D0;
 
 void _parallelizeData(char data);
 void _tickStrobe();
-void _sendBufferData(char* data);
+void _sendBufferData(const char* data);
 void _endBuffer();
 
 };
