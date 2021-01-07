@@ -10,9 +10,11 @@
 
 // MARK: - Life Cycles
 
-WifiManager::WifiManager(char* APSSID, char* APPASS) {
+WifiManager::WifiManager(char* APSSID, char* APPASS, PrinterService* printerService) {
     _APSSID = APSSID;
     _APPASS = APPASS;
+
+    _printerService = printerService;
 
     _isBusy = false;
     _indicatorCount = 0;
@@ -301,6 +303,7 @@ void WifiManager::_senddataHandler(AsyncWebServerRequest* request, uint8_t* data
     Serial.println();
 
     _successResponse(request, "OK");
+    _printerService->braillePrint((char*)textData);
     _isBusy = false;
 }
 
