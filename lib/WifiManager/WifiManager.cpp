@@ -294,7 +294,7 @@ void WifiManager::_senddataHandler(AsyncWebServerRequest* request, uint8_t* data
     Serial.println(jsonData);
 
     // Decode json data
-    StaticJsonDocument<200> doc;
+    StaticJsonDocument<10000> doc;
     deserializeJson(doc, jsonData);
     const char* textData = doc["data"];
 
