@@ -33,6 +33,7 @@ int _busy;
 int _strobe;
 int _D7, _D6, _D5, _D4, _D3, _D2, _D1, _D0;
 const char* _printingData;
+int _blinkLedCount;
 
 // MARK: - Private Method
 

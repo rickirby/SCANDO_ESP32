@@ -26,6 +26,7 @@ PrinterService::PrinterService(int busy, int strobe, int D7, int D6, int D5, int
     _D0 = D0;
 
     _printingData = "";
+    _blinkLedCount = 0;
 
     pinMode(busy, INPUT_PULLUP);
     pinMode(strobe, OUTPUT);
@@ -56,6 +57,7 @@ void PrinterService::executePrint() {
         _sendBufferData(_printingData);
         _endBuffer();
         _printingData = "";
+        _blinkLedCount = 0;
     }
 }
 
@@ -77,8 +79,18 @@ void PrinterService::_parallelizeData(char data) {
 
 void PrinterService::_tickStrobe() {
     digitalWrite(_strobe, LOW);
-    delay(50);
+    delay(20);
     digitalWrite(_strobe, HIGH);
+    delay(20);
+
+    if (_blinkLedCount == 1) {
+        digitalWrite(LED_BUILTIN, HIGH);
+    } else if (_blinkLedCount > 2) {
+        digitalWrite(LED_BUILTIN, LOW);
+        _blinkLedCount = 0;
+    }
+
+    _blinkLedCount++;
 }
 
 void PrinterService::_sendBufferData(const char* data) {
@@ -119,4 +131,5 @@ void PrinterService::_endBuffer() {
         _parallelizeData(0x0A);
         _parallelizeData(0x00);
         _tickStrobe();
+        digitalWrite(LED_BUILTIN, LOW);
 }
