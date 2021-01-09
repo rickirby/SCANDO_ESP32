@@ -10,9 +10,11 @@
 
 // MARK: - Life Cycles
 
-WifiManager::WifiManager(char* APSSID, char* APPASS) {
+WifiManager::WifiManager(char* APSSID, char* APPASS, PrinterService* printerService) {
     _APSSID = APSSID;
     _APPASS = APPASS;
+
+    _printerService = printerService;
 
     _isBusy = false;
     _indicatorCount = 0;
@@ -292,15 +294,15 @@ void WifiManager::_senddataHandler(AsyncWebServerRequest* request, uint8_t* data
     Serial.println(jsonData);
 
     // Decode json data
-    StaticJsonDocument<200> doc;
+    StaticJsonDocument<10000> doc;
     deserializeJson(doc, jsonData);
     const char* textData = doc["data"];
 
     Serial.println();
     Serial.println(textData);
     Serial.println();
-
     _successResponse(request, "OK");
+    _printerService->braillePrint(textData);
     _isBusy = false;
 }
 

@@ -25,6 +25,9 @@ PrinterService::PrinterService(int busy, int strobe, int D7, int D6, int D5, int
     _D1 = D1;
     _D0 = D0;
 
+    _printingData = "";
+    _blinkLedCount = 0;
+
     pinMode(busy, INPUT_PULLUP);
     pinMode(strobe, OUTPUT);
     pinMode(D7, OUTPUT);
@@ -45,10 +48,17 @@ PrinterService::~PrinterService() {
 
 // MARK: - Public Method
 
-void PrinterService::braillePrint(char* data) {
-    // TODO: perlu di test dahulu apakah data dari perangkat mobile sudah mengandung CR+LF untuk new line atau belum. jika belum, perlu ditambahkan logic di sini.
-    _sendBufferData(data);
-    _endBuffer();
+void PrinterService::braillePrint(const char* data) {
+    _printingData = data;
+}
+
+void PrinterService::executePrint() {
+    if (*_printingData) {
+        _sendBufferData(_printingData);
+        _endBuffer();
+        _printingData = "";
+        _blinkLedCount = 0;
+    }
 }
 
 // MARK: - Private Method
@@ -62,15 +72,37 @@ void PrinterService::_parallelizeData(char data) {
     digitalWrite(_D2, (data & (1 << 2)) >> 2);
     digitalWrite(_D1, (data & (1 << 1)) >> 1);
     digitalWrite(_D0, (data & (1 << 0)) >> 0);
+
+    Serial.print(data);
+    Serial.print("-");
+    Serial.print((data & (1 << 7)) >> 7);
+    Serial.print((data & (1 << 6)) >> 6);
+    Serial.print((data & (1 << 5)) >> 5);
+    Serial.print((data & (1 << 4)) >> 4);
+    Serial.print((data & (1 << 3)) >> 3);
+    Serial.print((data & (1 << 2)) >> 2);
+    Serial.print((data & (1 << 1)) >> 1);
+    Serial.print((data & (1 << 0)) >> 0);
+    Serial.print(" ");
 }
 
 void PrinterService::_tickStrobe() {
     digitalWrite(_strobe, LOW);
-    delay(50);
+    delay(1);
     digitalWrite(_strobe, HIGH);
+    delay(1);
+
+    if (_blinkLedCount == 20) {
+        digitalWrite(LED_BUILTIN, HIGH);
+    } else if (_blinkLedCount > 40) {
+        digitalWrite(LED_BUILTIN, LOW);
+        _blinkLedCount = 0;
+    }
+
+    _blinkLedCount++;
 }
 
-void PrinterService::_sendBufferData(char* data) {
+void PrinterService::_sendBufferData(const char* data) {
     while (*data) {
 
         // Checking busy line
@@ -79,6 +111,7 @@ void PrinterService::_sendBufferData(char* data) {
         while (digitalRead(_busy)) {
             delay(10);
             if (!timeout) {
+                Serial.println("Got Timeout on checking busy line");
                 break;
             }
 
@@ -95,17 +128,19 @@ void PrinterService::_sendBufferData(char* data) {
 void PrinterService::_endBuffer() {
     // Checking busy line
 
-        int timeout = 500;
-        while (digitalRead(_busy)) {
-            delay(10);
-            if (!timeout) {
-                break;
-            }
-
-            timeout--;
+    int timeout = 500;
+    while (digitalRead(_busy)) {
+        delay(10);
+        if (!timeout) {
+            Serial.println("Got Timeout on checking busy line");
+            break;
         }
 
-        _parallelizeData(0x0A);
-        _parallelizeData(0x00);
-        _tickStrobe();
+        timeout--;
+    }
+
+    _parallelizeData(0x0A);
+    _parallelizeData(0x00);
+    _tickStrobe();
+    digitalWrite(LED_BUILTIN, LOW);
 }

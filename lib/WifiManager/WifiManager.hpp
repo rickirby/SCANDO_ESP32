@@ -18,6 +18,7 @@
 #include <ArduinoJson.h>
 #include <PROJECT_CONSTANT.h>
 #include <WifiCache.hpp>
+#include <PrinterService.hpp>
 
 class WifiManager {
 
@@ -29,7 +30,7 @@ public:
 
     // MARK: - Life Cycles
 
-    WifiManager(char* APSSID, char* APPASS);
+    WifiManager(char* APSSID, char* APPASS, PrinterService* printerService);
     ~WifiManager();
 
     // MARK: - Public Methods
@@ -43,6 +44,8 @@ private:
 
     char* _APSSID;
     char* _APPASS;
+
+    PrinterService* _printerService;
 
     bool _isBusy;
     char _indicatorCount;
