@@ -21,7 +21,7 @@ void commonSetting() {
 }
 
 void configurePrinterService() {
-    printerService = new PrinterService(35, 34, 13, 12, 14, 27, 26, 25, 33, 32);
+    printerService = new PrinterService(13, 34, 12, 14, 27, 26, 25, 33, 32, 35);
 }
 
 void wifiSetting() {
