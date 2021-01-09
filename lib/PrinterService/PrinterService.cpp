@@ -92,12 +92,12 @@ void PrinterService::_tickStrobe() {
     digitalWrite(_strobe, HIGH);
     delay(1);
 
-    if (_blinkLedCount == 20) {
-        digitalWrite(LED_BUILTIN, HIGH);
-    } else if (_blinkLedCount > 40) {
-        digitalWrite(LED_BUILTIN, LOW);
-        _blinkLedCount = 0;
-    }
+    // if (_blinkLedCount == 20) {
+    //     digitalWrite(LED_BUILTIN, HIGH);
+    // } else if (_blinkLedCount > 40) {
+    //     digitalWrite(LED_BUILTIN, LOW);
+    //     _blinkLedCount = 0;
+    // }
 
     _blinkLedCount++;
 }
@@ -107,16 +107,16 @@ void PrinterService::_sendBufferData(const char* data) {
 
         // Checking busy line
 
-        // int timeout = 500;
-        // while (digitalRead(_busy)) {
-        //     delay(10);
-        //     if (!timeout) {
-        //         Serial.println("Got Timeout on checking busy line");
-        //         break;
-        //     }
+        int timeout = 500;
+        while (digitalRead(_busy)) {
+            delay(10);
+            if (!timeout) {
+                Serial.println("Got Timeout on checking busy line");
+                break;
+            }
 
-        //     timeout--;
-        // }
+            timeout--;
+        }
 
         _parallelizeData(*data);
         _tickStrobe();
@@ -128,19 +128,19 @@ void PrinterService::_sendBufferData(const char* data) {
 void PrinterService::_endBuffer() {
     // Checking busy line
 
-    // int timeout = 500;
-    // while (digitalRead(_busy)) {
-    //     delay(10);
-    //     if (!timeout) {
-    //         Serial.println("Got Timeout on checking busy line");
-    //         break;
-    //     }
+    int timeout = 500;
+    while (digitalRead(_busy)) {
+        delay(10);
+        if (!timeout) {
+            Serial.println("Got Timeout on checking busy line");
+            break;
+        }
 
-    //     timeout--;
-    // }
+        timeout--;
+    }
 
     _parallelizeData(0x0A);
     _parallelizeData(0x00);
     _tickStrobe();
-    digitalWrite(LED_BUILTIN, LOW);
+    // digitalWrite(LED_BUILTIN, LOW);
 }
