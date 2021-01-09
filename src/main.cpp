@@ -31,6 +31,15 @@ void wifiSetting() {
     wifiManager->begin();
 }
 
+void readyNotice() {
+    for (int i = 0; i < 8; i++) {
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(100);
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(100);
+    }
+}
+
 void Task1code(void* pvParameters ){
     while(true) {
         wifiManager->checkWifiStatus();
@@ -56,6 +65,7 @@ void setup() {
     configurePrinterService();
     wifiSetting();
     configureTask();
+    readyNotice();
 }
 
 void loop() {
