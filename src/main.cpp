@@ -21,7 +21,7 @@ void commonSetting() {
 }
 
 void configurePrinterService() {
-    printerService = new PrinterService(13, 34, 12, 14, 27, 26, 25, 33, 32, 35);
+    printerService = new PrinterService(33, 26, 4, 5, 18, 19, 21, 12, 14, 27);
 }
 
 void wifiSetting() {
@@ -40,6 +40,11 @@ void Task1code(void* pvParameters ){
 void Task2code(void* pvParameters ){
     while(true) {
         printerService->executePrint();
+        // digitalWrite(2, LOW);
+        // delay(2000);
+        // digitalWrite(2, HIGH);
+        // delay(2000);
+        // Serial.print("tiktuk");
     }
 }
 
