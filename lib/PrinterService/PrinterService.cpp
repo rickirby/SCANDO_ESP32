@@ -73,8 +73,17 @@ void PrinterService::_parallelizeData(char data) {
     digitalWrite(_D1, (data & (1 << 1)) >> 1);
     digitalWrite(_D0, (data & (1 << 0)) >> 0);
 
-    Serial.print("-");
     Serial.print(data);
+    Serial.print("-");
+    Serial.print((data & (1 << 7)) >> 7);
+    Serial.print((data & (1 << 6)) >> 6);
+    Serial.print((data & (1 << 5)) >> 5);
+    Serial.print((data & (1 << 4)) >> 4);
+    Serial.print((data & (1 << 3)) >> 3);
+    Serial.print((data & (1 << 2)) >> 2);
+    Serial.print((data & (1 << 1)) >> 1);
+    Serial.print((data & (1 << 0)) >> 0);
+    Serial.print(" ");
 }
 
 void PrinterService::_tickStrobe() {
@@ -98,16 +107,16 @@ void PrinterService::_sendBufferData(const char* data) {
 
         // Checking busy line
 
-        int timeout = 500;
-        while (digitalRead(_busy)) {
-            delay(10);
-            if (!timeout) {
-                Serial.println("Got Timeout on checking busy line");
-                break;
-            }
+        // int timeout = 500;
+        // while (digitalRead(_busy)) {
+        //     delay(10);
+        //     if (!timeout) {
+        //         Serial.println("Got Timeout on checking busy line");
+        //         break;
+        //     }
 
-            timeout--;
-        }
+        //     timeout--;
+        // }
 
         _parallelizeData(*data);
         _tickStrobe();
@@ -119,16 +128,16 @@ void PrinterService::_sendBufferData(const char* data) {
 void PrinterService::_endBuffer() {
     // Checking busy line
 
-    int timeout = 500;
-    while (digitalRead(_busy)) {
-        delay(10);
-        if (!timeout) {
-            Serial.println("Got Timeout on checking busy line");
-            break;
-        }
+    // int timeout = 500;
+    // while (digitalRead(_busy)) {
+    //     delay(10);
+    //     if (!timeout) {
+    //         Serial.println("Got Timeout on checking busy line");
+    //         break;
+    //     }
 
-        timeout--;
-    }
+    //     timeout--;
+    // }
 
     _parallelizeData(0x0A);
     _parallelizeData(0x00);
